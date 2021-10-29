@@ -26,9 +26,11 @@ HTTP сервер поднимается на порту 8080.
 Вход по логину и паролю.
 
 **Запрос**:
+```
 Method: POST
 Content-type: application/json
 Body: {"username": "user1", "password": "123456"}
+```
 
 Пароль всегда - 123456. Username - любой уникальный nickname. 
 
@@ -93,51 +95,76 @@ ws://localhost:8080/websocket?token=<token>
 Данный запрос должен отправляться в статусе **init** для начала ожидания игры и перехода в статус **wait**.
 
 Сообщение отправляемое в веб-сокет:
+```json
 {"id": 123, "action": "join"}
+```
 
 где id - уникальный номер запроса в рамках одной сессий веб-сокета. Данное поле используется для сопоставления запроса и ответа.
 
 Успешный ответ:
+```json
 {"type": "response", "requestId": 123, "data": "OK"}
+```
 
 Ошибка:
+```json
 {"type": "response", "requestId": 123, "error": true, "errorMessage": "..."}
+```
 
 ## Запрос action=undo_join
 
 Данный запрос должен отправляться в статусе **wait** для окончания ожидания игры и перехода в статус **init**.
 
 Сообщение отправляемое в веб-сокет:
+```json
 {"id": 123, "action": "undo_join"}
+```
 
 Успешный ответ:
+```json
 {"type": "response", "requestId": 123, "data": "OK"}
+```
 
 Ошибка:
+```json
 {"type": "response", "requestId": 123, "error": true, "errorMessage": "..."}
+```
 
 ## Запрос action=game_set_block
 
 Данный запрос должен отправляться в статусе **game** и **roundCompleted=false** для установки зоны блока.
 
 Сообщение отправляемое в веб-сокет:
+```json
 {"id": 123, "action": "game_set_block", "block": 0-3}
+```
 
 Успешный ответ:
+```json
 {"type": "response", "requestId": 123, "data": "OK"}
+```
 
 Ошибка:
+```json
 {"type": "response", "requestId": 123, "error": true, "errorMessage": "..."}
+```
 
 ## Запрос action=game_set_kick
 
 Данный запрос должен отправляться в статусе **game** и **roundCompleted=false** для установки зоны удара.
 
 Сообщение отправляемое в веб-сокет:
+```json
 {"id": 123, "action": "game_set_kick", "kick": 0-3}
+```
 
 Успешный ответ:
+```json
 {"type": "response", "requestId": 123, "data": "OK"}
+```
 
 Ошибка:
+
+```json
 {"type": "response", "requestId": 123, "error": true, "errorMessage": "..."}
+```
