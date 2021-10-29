@@ -35,12 +35,16 @@ Body: {"username": "user1", "password": "123456"}
 Пароль всегда - 123456. Username - любой уникальный nickname. 
 
 **Успешный ответ**:
+```
 Status: 200
 Body: {"token": "..."} - token для открытия веб-сокета.
+```
 
 **Ответ в случае неверного пароля**:
+```
 Status: 500
 Body: {"error":true,"errorMessage":"Password mismatch"}
+```
 
 # /websocket
 
