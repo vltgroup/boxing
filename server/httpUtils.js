@@ -13,14 +13,16 @@ class HttpUtils {
     });
   }
 
-  writeError(response, errorMessage) {
-    response.writeHead(500, {"Content-Type": "application/json"});
+  writeError(response, errorMessage, headers) {
+    headers["Content-Type"] = "application/json";
+    response.writeHead(500, headers);
     response.write(JSON.stringify({error: true, "errorMessage": errorMessage}));
     response.end();     
   }
   
-  writeJson(response, resp) {
-    response.writeHead(200, {"Content-Type": "application/json"});
+  writeJson(response, resp, headers) {
+    headers["Content-Type"] = "application/json";
+    response.writeHead(200, headers);
     response.write(JSON.stringify(resp));
     response.end();
   }

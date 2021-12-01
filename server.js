@@ -13,26 +13,43 @@ const TOKEN_EXPIRED_CLOSURE_REASON = "TOKEN_EXPIRED";
 const webSocketServer = new WebSocket.Server({ noServer: true });
 const httpServer = Http.createServer(function(request, response) {
   const { pathname } = Url.parse(request.url);
+  var origin = request.headers["Origin"];
+  if (!origin) {
+    origin = "*";
+  }
+  var headers = {
+    "Access-Control-Allow-Origin": origin,
+    "Access-Control-Allow-Headers": "Accept,Content-Type,Origin,Cookie,Authorization",
+    "Access-Control-Allow-Methods": "POST,GET,OPTIONS",
+    "Access-Control-Allow-Credentials": "true"
+  }
+  if (request.method === 'OPTIONS') {
+    response.writeHead(204, headers);
+    response.end();
+    return;
+  }
   if (pathname === '/login' && request.method === 'POST') {
     HttpUtils.readJson(request, function(req) {
       if (!req.username) {
-        HttpUtils.writeError(response, "Absent or invalid username");
+        HttpUtils.writeError(response, "Absent or invalid username", headers);
       } else if (!req.password || req.password != Settings.USERS_PASSWORD) {
-        HttpUtils.writeError(response, "Password mismatch");
+        HttpUtils.writeError(response, "Password mismatch", headers);
       } else {
         var token = Tokens.createToken(req.username, Settings.TOKEN_TTL);
-        HttpUtils.writeJson(response, {"token": token.uuid});
+        HttpUtils.writeJson(response, {"token": token.uuid}, headers);
       }
     });
   } else if (pathname.startsWith('/assets/')) {
     // assets file download (unsafe)
     FileSystem.readFile('.' + pathname, function(err, data) {
       if (err) {
-        response.writeHead(500, {"Content-Type": "text/plain"});
+        headers["Content-Type"] = "text/plain";
+        response.writeHead(500, headers);
         response.write('Failed to load ' + pathname + '. Details: ' + err.message);
         response.end();
       } else {
-        response.writeHead(200, {"Content-Type": mime.lookup(pathname.substr(1))});
+        headers["Content-Type"] = mime.lookup(pathname.substr(1));
+        response.writeHead(200, headers);
         response.write(data);  
         response.end();
       }
@@ -42,11 +59,13 @@ const httpServer = Http.createServer(function(request, response) {
     // other urls might be path inside HTML5 app routining, so return index.html
     FileSystem.readFile('./index.html', function(err, html) {
       if (err) {
-        response.writeHead(500, {"Content-Type": "text/plain"});
+        headers["Content-Type"] = "text/plain";
+        response.writeHead(500, headers);
         response.write('Failed to load index.html. Details: ' + err.message);
         response.end();
       } else {
-        response.writeHead(200, {"Content-Type": "text/html"});
+        headers["Content-Type"] = "text/html";
+        response.writeHead(200, headers);
         response.write(html);  
         response.end();
       }

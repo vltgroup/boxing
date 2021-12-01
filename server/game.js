@@ -40,8 +40,10 @@ class Game extends EventEmitter {
     this.roundCompleted = false;
     this.player1.currentBlock = 0;
     this.player1.currentKick = 0;
+    this.player1.lastRoundHit = false;
     this.player2.currentBlock = 0;
     this.player2.currentKick = 0;
+    this.player2.lastRoundHit = false;
     this.timeout = Settings.GAME_ROUND_TIMEOUT;
     this.timeoutTs = new Date().getTime();
     setTimeout(this.roundEnd, Settings.GAME_ROUND_TIMEOUT);
